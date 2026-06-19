@@ -107,11 +107,9 @@ jobs:
         find dl -size -1024c -exec ls -l {} \;
         find dl -size -1024c -exec rm -f {} \;
 
-     - name: Setup build environment & Enable ccache
+    - name: Setup build environment & Enable ccache
       run: |
-        # 安装 ccache 工具
         sudo apt-get update && sudo apt-get install -y ccache
-        # 限制 ccache 的最大容量为 5GB（GitHub 免费账户每个仓库最大缓存限制为 10GB）
         ccache --max-size=5G
         
         cd openwrt
