@@ -81,7 +81,23 @@ jobs:
 #    - name: SSH connection to Actions
 #      uses: P3TERX/ssh2actions@v1.0.0
 #      if: true
-      
+
+    - name: Cache dl directory
+      uses: actions/cache@v4
+      with:
+        path: openwrt/dl
+        key: ${{ runner.os }}-openwrt-dl-${{ hashFiles('**/feeds.conf.default', '**/.config') }}
+        restore-keys: |
+          ${{ runner.os }}-openwrt-dl-
+    
+    - name: Cache ccache
+      uses: actions/cache@v4
+      with:
+        path: ~/.ccache
+        key: ${{ runner.os }}-openwrt-ccache-${{ hashFiles('**/feeds.conf.default', '**/.config') }}
+        restore-keys: |
+          ${{ runner.os }}-openwrt-ccache-
+
     - name: Download package
       id: package
       run: |
@@ -91,12 +107,23 @@ jobs:
         find dl -size -1024c -exec ls -l {} \;
         find dl -size -1024c -exec rm -f {} \;
 
+     - name: Setup build environment & Enable ccache
+      run: |
+        # 安装 ccache 工具
+        sudo apt-get update && sudo apt-get install -y ccache
+        # 限制 ccache 的最大容量为 5GB（GitHub 免费账户每个仓库最大缓存限制为 10GB）
+        ccache --max-size=5G
+        
+        cd openwrt
+        # 强行向你的 .config 文件中注入开启 ccache 的配置
+        echo "CONFIG_CCACHE=y" >> .config
+        
     - name: Compile the firmware
       id: compile
       run: |
         cd openwrt
         echo -e "$(nproc) thread compile"
-        make -j$(nproc) || make -j1 || make -j1 V=s
+        make -j$(nproc) IGNORE_ERRORS=1 ccache=1 || make -j1 V=s IGNORE_ERRORS=1 ccache=1
         echo "status=success" >> $GITHUB_OUTPUT
         grep '^CONFIG_TARGET.*DEVICE.*=y' .config | sed -r 's/.*DEVICE_(.*)=y/\1/' > DEVICE_NAME
         [ -s DEVICE_NAME ] && echo "DEVICE_NAME=_$(cat DEVICE_NAME)" >> $GITHUB_ENV
