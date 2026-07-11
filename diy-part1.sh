@@ -11,6 +11,5 @@
 #
 
 # Uncomment a feed source
-echo 'src-git qmodem https://github.com/FUjr/modem_feeds.git' >> feeds.conf.default
 # Add a feed source
 #echo 'src-git passwall https://github.com/xiaorouji/openwrt-passwall' >>feeds.conf.default
