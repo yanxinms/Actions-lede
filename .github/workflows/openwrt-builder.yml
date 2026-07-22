@@ -17,8 +17,8 @@ on:
   workflow_dispatch:
 
 env:
-  REPO_URL: https://github.com/coolsnowwolf/lede
-  REPO_BRANCH: master
+  REPO_URL: https://github.com/xiaoqi2020/openwrt
+  REPO_BRANCH: xiaomi_be7000
   FEEDS_CONF: feeds.conf.default
   CONFIG_FILE: .config
   DIY_P1_SH: diy-part1.sh
@@ -79,25 +79,25 @@ jobs:
         cd openwrt
         $GITHUB_WORKSPACE/$DIY_P2_SH
         
-    - name: SSH connection to Actions
-      uses: P3TERX/ssh2actions@v1.0.0
-      if: true
+#    - name: SSH connection to Actions
+#      uses: P3TERX/ssh2actions@v1.0.0
+#      if: true
 
-#    - name: Cache dl directory
-#      uses: actions/cache@v4
-#      with:
-#        path: openwrt/dl
-#        key: ${{ runner.os }}-openwrt-dl-${{ hashFiles('**/feeds.conf.default', '**/.config') }}
-#        restore-keys: |
-#          ${{ runner.os }}-openwrt-dl-
+    - name: Cache dl directory
+      uses: actions/cache@v4
+      with:
+        path: openwrt/dl
+        key: ${{ runner.os }}-openwrt-dl-${{ hashFiles('**/feeds.conf.default', '**/.config') }}
+        restore-keys: |
+          ${{ runner.os }}-openwrt-dl-
     
-#    - name: Cache ccache
-#      uses: actions/cache@v4
-#      with:
-#        path: ~/.ccache
-#        key: ${{ runner.os }}-openwrt-ccache-${{ hashFiles('**/feeds.conf.default', '**/.config') }}
-#        restore-keys: |
-#          ${{ runner.os }}-openwrt-ccache-
+    - name: Cache ccache
+      uses: actions/cache@v4
+      with:
+        path: ~/.ccache
+        key: ${{ runner.os }}-openwrt-ccache-${{ hashFiles('**/feeds.conf.default', '**/.config') }}
+        restore-keys: |
+          ${{ runner.os }}-openwrt-ccache-
 
     - name: Download package
       id: package
