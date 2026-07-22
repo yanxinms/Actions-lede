@@ -11,8 +11,5 @@
 #
 
 # Uncomment a feed source
-sed -i 's/^#\(.*qmodem\)/\1/' feeds.conf.default
-sed -i '/coolsnowwolf\/luci/d' feeds.conf.default
-echo 'src-git luci https://github.com/coolsnowwolf/luci' >> feeds.conf.default
 # Add a feed source
 #echo 'src-git passwall https://github.com/xiaorouji/openwrt-passwall' >>feeds.conf.default
