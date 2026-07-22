@@ -18,8 +18,6 @@ git clone --depth=1 --single-branch --branch master https://github.com/vernesong
 mv openclash_repo/luci-app-openclash package/
 rm -rf openclash_repo
 
-git clone https://github.com/QiuSimons/luci-app-daed package/dae
-
 # Modify default IP
 #sed -i 's/192.168.1.1/192.168.50.5/g' package/base-files/files/bin/config_generate
 
