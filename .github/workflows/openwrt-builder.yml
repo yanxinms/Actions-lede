@@ -76,7 +76,7 @@ jobs:
         [ -e $CONFIG_FILE ] && mv $CONFIG_FILE immortalwrt/.config
         rm -f immortalwrt/target/linux/qualcommax/dts/ipq6010-re-cs-02.dts
         cp ipq6010-re-cs-02.dts immortalwrt/target/linux/qualcommax/dts/ipq6010-re-cs-02.dts
-        cp 950-arm64-dts-ipq6018-reduce-q6-memory.patch immortalwrt/target/linux/qualcommax/patches-6.18/950-arm64-dts-ipq6018-reduce-q6-memory.patch
+        cp 0951-arm64-dts-ipq6018-reduce-q6-memory.patch immortalwrt/target/linux/qualcommax/patches-6.18/0951-arm64-dts-ipq6018-reduce-q6-memory.patch
         chmod +x $DIY_P2_SH
         cd immortalwrt
         $GITHUB_WORKSPACE/$DIY_P2_SH
