@@ -89,17 +89,18 @@ jobs:
       uses: actions/cache@v4
       with:
         path: immortalwrt/dl
-        key: ${{ runner.os }}-immortalwrt-dl-${{ hashFiles('**/feeds.conf.default', '**/.config') }}
+        key: ${{ runner.os }}-immortalwrt-dl
         restore-keys: |
-          ${{ runner.os }}-immortalwrt-dl-
-    
+          ${{ runner.os }}-immortalwrt-dl
+
+
     - name: Cache ccache
       uses: actions/cache@v4
       with:
         path: ~/.ccache
-        key: ${{ runner.os }}-immortalwrt-ccache-${{ hashFiles('**/feeds.conf.default', '**/.config') }}
+        key: ${{ runner.os }}-immortalwrt-ccache
         restore-keys: |
-          ${{ runner.os }}-immortalwrt-ccache-
+          ${{ runner.os }}-immortalwrt-ccache
 
     - name: Download package
       id: package
@@ -113,10 +114,14 @@ jobs:
     - name: Setup build environment & Enable ccache
       run: |
         sudo apt-get update && sudo apt-get install -y ccache
-        ccache --max-size=5G
+        
+        ccache --max-size=6G
+        ccache --set-config=compression=true
+        ccache --set-config=compression_level=6
+        ccache --zero-stats
+        ccache --show-stats
         
         cd immortalwrt
-        # 强行向你的 .config 文件中注入开启 ccache 的配置
         echo "CONFIG_CCACHE=y" >> .config
         
     - name: Compile the firmware
@@ -129,6 +134,11 @@ jobs:
         grep '^CONFIG_TARGET.*DEVICE.*=y' .config | sed -r 's/.*DEVICE_(.*)=y/\1/' > DEVICE_NAME
         [ -s DEVICE_NAME ] && echo "DEVICE_NAME=_$(cat DEVICE_NAME)" >> $GITHUB_ENV
         echo "FILE_DATE=_$(date +"%Y%m%d%H%M")" >> $GITHUB_ENV
+
+    - name: Show ccache stats
+      if: always()
+      run: |
+        ccache --show-stats
 
     - name: Check space usage
       if: (!cancelled())
